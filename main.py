@@ -162,15 +162,22 @@ def analyze_video(csv_path, models, fusion_column='fusion', threshold=0):
     Returns:
         str: 'Synthetic' if the video is classified as synthetic, 'Real' otherwise.
     """
-    # Load the CSV
-    data = pd.read_csv(csv_path)
-    
-    # Check for synthetic frames for each model and the fusion column
-    is_synthetic_by_fusion = (data[fusion_column] > threshold).any()
-    is_synthetic_by_models = any((data[model] > threshold).any() for model in models)
+    try:
+        data = pd.read_csv(csv_path)
 
-    # Combine decisions
-    return "Synthetic" if is_synthetic_by_fusion or is_synthetic_by_models else "Real"
+        required_columns = models + [fusion_column]
+        missing_columns = [col for col in required_columns if col not in data.columns]
+        if missing_columns:
+            raise ValueError(f"Missing required columns in the CSV: {missing_columns}")
+
+        is_synthetic_by_models = any((data[model] > threshold).any() for model in models)
+
+        is_synthetic_by_fusion = (data[fusion_column] > threshold).any()
+
+        return "Synthetic" if is_synthetic_by_fusion or is_synthetic_by_models else "Real"
+    
+    except Exception as e:
+        raise RuntimeError(f"Error analyzing video: {e}")
 
 if __name__ == "__main__":
     parent_path = os.path.dirname(os.path.abspath(__file__))
