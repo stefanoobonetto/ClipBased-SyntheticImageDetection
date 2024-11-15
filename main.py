@@ -1,35 +1,32 @@
-'''                                        
+'''
 Copyright 2024 Image Processing Research Group of University Federico
 II of Naples ('GRIP-UNINA'). All rights reserved.
-                        
-Licensed under the Apache License, Version 2.0 (the "License");       
-you may not use this file except in compliance with the License. 
-You may obtain a copy of the License at                    
-                                           
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
     http://www.apache.org/licenses/LICENSE-2.0
-                                                      
+
 Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,    
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.                         
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-''' 
+'''
 
 import torch
 import os
-import pandas
+import pandas as pd
 import numpy as np
 import tqdm
-import glob
-import sys
 import yaml
 from PIL import Image
-
-from torchvision.transforms  import CenterCrop, Resize, Compose, InterpolationMode
+from torchvision.transforms import CenterCrop, Resize, Compose, InterpolationMode
 from utils.processing import make_normalize
 from utils.fusion import apply_fusion
 from networks import create_architecture, load_weights
-
+import cv2
 
 def get_config(model_name, weights_dir='./weights'):
     with open(os.path.join(weights_dir, model_name, 'config.yaml')) as fid:
@@ -37,9 +34,37 @@ def get_config(model_name, weights_dir='./weights'):
     model_path = os.path.join(weights_dir, model_name, data['weights_file'])
     return data['model_name'], model_path, data['arch'], data['norm_type'], data['patch_size']
 
+def extract_frames_from_video(video_path, output_dir):
+    """
+    Extract frames from an MP4 video and save them as images in the output directory.
+    """
+    os.makedirs(output_dir, exist_ok=True)
+    cap = cv2.VideoCapture(video_path)
+    frame_count = 0
+    frame_paths = []
+    
+    while True:
+        ret, frame = cap.read()
+        if not ret:
+            break
+        frame_filename = os.path.join(output_dir, f"frame_{frame_count:04d}.jpg")
+        cv2.imwrite(frame_filename, frame)
+        frame_paths.append(frame_filename)
+        frame_count += 1
+    
+    cap.release()
+    return frame_paths
 
-def runnig_tests(input_csv, weights_dir, models_list, device, batch_size = 1):
-    table = pandas.read_csv(input_csv)[['filename',]]
+def generate_csv_from_frames(frame_paths, csv_path):
+    """
+    Create a CSV file with the list of frame image paths.
+    """
+    data = {'filename': frame_paths}
+    df = pd.DataFrame(data)
+    df.to_csv(csv_path, index=False)
+
+def running_tests(input_csv, weights_dir, models_list, device, batch_size=1):
+    table = pd.read_csv(input_csv)[['filename',]]
     rootdataset = os.path.dirname(os.path.abspath(input_csv))
     
     models_dict = dict()
@@ -56,7 +81,7 @@ def runnig_tests(input_csv, weights_dir, models_list, device, batch_size = 1):
         if patch_size is None:
             print('input none', flush=True)
             transform_key = 'none_%s' % norm_type
-        elif patch_size=='Clip224':
+        elif patch_size == 'Clip224':
             print('input resize:', 'Clip224', flush=True)
             transform.append(Resize(224, interpolation=InterpolationMode.BICUBIC))
             transform.append(CenterCrop((224, 224)))
@@ -79,7 +104,6 @@ def runnig_tests(input_csv, weights_dir, models_list, device, batch_size = 1):
 
     ### test
     with torch.no_grad():
-        
         do_models = list(models_dict.keys())
         do_transforms = set([models_dict[_][0] for _ in do_models])
         print(do_models)
@@ -96,7 +120,7 @@ def runnig_tests(input_csv, weights_dir, models_list, device, batch_size = 1):
                 batch_img[k].append(transform_dict[k](Image.open(filename).convert('RGB')))
             batch_id.append(index)
 
-            if (len(batch_id) >= batch_size) or (index==last_index):
+            if (len(batch_id) >= batch_size) or (index == last_index):
                 for k in do_transforms:
                     batch_img[k] = torch.stack(batch_img[k], 0)
 
@@ -121,33 +145,84 @@ def runnig_tests(input_csv, weights_dir, models_list, device, batch_size = 1):
                 batch_img = {k: list() for k in transform_dict}
                 batch_id = list()
 
-            assert len(batch_id)==0
+            assert len(batch_id) == 0
         
     return table
 
+def analyze_video(csv_path, models, fusion_column='fusion', threshold=0):
+    """
+    Analyze the output CSV to determine if a video is synthetic or not.
+    
+    Args:
+        csv_path (str): Path to the output CSV file.
+        models (list): List of model column names to evaluate (e.g., ['clipdet_latent10k_plus', 'Corvi2023']).
+        fusion_column (str): Column name for the fusion score.
+        threshold (float): Threshold above which a frame is classified as synthetic.
+    
+    Returns:
+        str: 'Synthetic' if the video is classified as synthetic, 'Real' otherwise.
+    """
+    # Load the CSV
+    data = pd.read_csv(csv_path)
+    
+    # Check for synthetic frames for each model and the fusion column
+    is_synthetic_by_fusion = (data[fusion_column] > threshold).any()
+    is_synthetic_by_models = any((data[model] > threshold).any() for model in models)
+
+    # Combine decisions
+    return "Synthetic" if is_synthetic_by_fusion or is_synthetic_by_models else "Real"
 
 if __name__ == "__main__":
-    
-    import argparse
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--in_csv"     , '-i', type=str, help="The path of the input csv file with the list of images")
-    parser.add_argument("--out_csv"    , '-o', type=str, help="The path of the output csv file", default="./results.csv")
-    parser.add_argument("--weights_dir", '-w', type=str, help="The directory to the networks weights", default="./weights")
-    parser.add_argument("--models"     , '-m', type=str, help="List of models to test", default='clipdet_latent10k_plus,Corvi2023')
-    parser.add_argument("--fusion"     , '-f', type=str, help="Fusion function", default='soft_or_prob')
-    parser.add_argument("--device"     , '-d', type=str, help="Torch device", default='cuda:0')
-    args = vars(parser.parse_args())
-    
-    if args['models'] is None:
-        args['models'] = os.listdir(args['weights_dir'])
+    parent_path = os.path.dirname(os.path.abspath(__file__))
+        
+    if torch.cuda.is_available():
+        device = 'cuda'
+    elif torch.backends.mps.is_available():
+        device = 'mps'
     else:
-        args['models'] = args['models'].split(',')
+        device = 'cpu'
+
+    video_paths_fake = [
+        os.path.join(parent_path, "Luma/Purse_Fake.mp4"),
+        os.path.join(parent_path, "Luma/Horse_Fake.mp4"),
+        os.path.join(parent_path, "Luma/Cow_Fake.mp4"),
+        os.path.join(parent_path, "Luma/Skier_Fake.mp4"),
+        os.path.join(parent_path, "Luma/TV_Fake.mp4"),
+        os.path.join(parent_path, "Luma/Sofa_Fake.mp4"),
+        os.path.join(parent_path, "Luma/Soldier_Fake.mp4")
+    ]
+    video_paths_true = [
+        os.path.join(parent_path, "Real_ones/Cow_Real.mp4"),
+        os.path.join(parent_path, "Real_ones/Skier_Real.mp4"),
+        os.path.join(parent_path, "Real_ones/Soldier_Real.mp4")
+    ]
     
-    table = runnig_tests(args['in_csv'], args['weights_dir'], args['models'], args['device'])
-    if args['fusion'] is not None:
-        table['fusion'] = apply_fusion(table[args['models']].values, args['fusion'], axis=-1)
+    video_path = video_paths_true[0]
     
-    output_csv = args['out_csv']
+    print("\n\n\nRunning tests on video: ", video_path, "\n\n\n")
+    
+    weights_dir = os.path.join(parent_path, "weights")
+    temp_dir = os.path.join(parent_path, "temp_frames")
+    models = ['clipdet_latent10k_plus', 'Corvi2023']
+    fusion = 'soft_or_prob'
+
+    csv_path = os.path.join(temp_dir, "input_images.csv")
+    output_csv = os.path.join(parent_path, "results.csv")
+    
+    print("Extracting frames from video...")
+    frame_paths = extract_frames_from_video(video_path, temp_dir)
+    
+    generate_csv_from_frames(frame_paths, csv_path)
+    print(f"Frames extracted and CSV generated: {csv_path}")
+
+    table = running_tests(csv_path, weights_dir, models, device)
+    if fusion is not None:
+        table['fusion'] = apply_fusion(table[models].values, fusion, axis=-1)
+    
     os.makedirs(os.path.dirname(os.path.abspath(output_csv)), exist_ok=True)
-    table.to_csv(output_csv, index=False)  # save the results as csv file
-    
+    table.to_csv(output_csv, index=False)
+    print(f"Results saved to {output_csv}")
+
+    # Analyze the video
+    video_classification = analyze_video(output_csv, models)
+    print(f"The video is classified as: {video_classification}")
