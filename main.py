@@ -66,7 +66,7 @@ def generate_csv_from_frames(frame_paths, csv_path):
 def running_tests(input_csv, weights_dir, models_list, device, batch_size=1):
     table = pd.read_csv(input_csv)[['filename',]]
     rootdataset = os.path.dirname(os.path.abspath(input_csv))
-    
+
     models_dict = dict()
     transform_dict = dict()
     print("Models:")
@@ -230,6 +230,12 @@ if __name__ == "__main__":
     table.to_csv(output_csv, index=False)
     print(f"Results saved to {output_csv}")
 
-    # Analyze the video
+    # all frames are processed, now we can classify the video based on the results
+    # question: how to classify the video? by the average of the frames? by the majority of the frames
+    # now we classify the video by the majority of the frames
+    
+    # logic: LLR > 0 --> synthetic
+    # consider the fusion score as well (?) --> if the fusion score is high, then the video is synthetic
+    
     video_classification = analyze_video(output_csv, models)
     print(f"The video is classified as: {video_classification}")
