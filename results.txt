@@ -1,5 +1,4 @@
 /Users/stefanobonetto/Documents/GitHub/ClipBased-SyntheticImageDetection/Luma/Purse_Fake.mp4
-
 | Model                  | Output    |   Confidence |
 |:-----------------------|:----------|-------------:|
 | clipdet_latent10k      | Synthetic |     1        |
@@ -11,9 +10,9 @@
 | fusion[lse_logit]      | Synthetic |     1        |
 | fusion[mean_prob]      | Synthetic |     0.909091 |
 | fusion[soft_or_prob]   | Synthetic |     1        |
+| fusion[lse_logit]      | Synthetic |     1        |
 
 /Users/stefanobonetto/Documents/GitHub/ClipBased-SyntheticImageDetection/Luma/Horse_Fake.mp4
-
 | Model                  | Output    |   Confidence |
 |:-----------------------|:----------|-------------:|
 | clipdet_latent10k      | Synthetic |     0.735537 |
@@ -22,7 +21,6 @@
 | fusion[mean_logit]     | Real      |     0.859504 |
 | fusion[max_logit]      | Synthetic |     1        |
 | fusion[median_logit]   | Synthetic |     0.735537 |
-| fusion[lse_logit]      | Synthetic |     1        |
 | fusion[mean_prob]      | Real      |     0.595041 |
 | fusion[soft_or_prob]   | Synthetic |     1        |
 
@@ -129,4 +127,17 @@
 | fusion[lse_logit]      | Synthetic |     0.650794 |
 | fusion[mean_prob]      | Real      |     1        |
 | fusion[soft_or_prob]   | Synthetic |     0.960317 |
+
+/Users/stefanobonetto/Documents/GitHub/ClipBased-SyntheticImageDetection/test_videos/Skier_Real.mp4
+| Model                  | Output   |   Confidence |
+|:-----------------------|:---------|-------------:|
+| clipdet_latent10k      | Real     |            1 |
+| clipdet_latent10k_plus | Real     |            1 |
+| Corvi2023              | Real     |            1 |
+| fusion[mean_logit]     | Real     |            1 |
+| fusion[max_logit]      | Real     |            1 |
+| fusion[median_logit]   | Real     |            1 |
+| fusion[lse_logit]      | Real     |            1 |
+| fusion[mean_prob]      | Real     |            1 |
+| fusion[soft_or_prob]   | Real     |            1 |
 

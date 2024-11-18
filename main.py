@@ -200,8 +200,6 @@ def print_results(video_path, csv_path, models, fusion_methods, threshold=0):
     except Exception as e:
         raise RuntimeError(f"Error analyzing video: {e}")
 
-
-
 if __name__ == "__main__":
     parent_path = os.path.dirname(os.path.abspath(__file__))
         
@@ -213,21 +211,21 @@ if __name__ == "__main__":
         device = 'cpu'
 
     video_paths_fake = [
-        os.path.join(parent_path, "Luma/Purse_Fake.mp4"),
-        os.path.join(parent_path, "Luma/Horse_Fake.mp4"),
-        os.path.join(parent_path, "Luma/Cow_Fake.mp4"),
-        os.path.join(parent_path, "Luma/Skier_Fake.mp4"),
-        os.path.join(parent_path, "Luma/TV_Fake.mp4"),
-        os.path.join(parent_path, "Luma/Sofa_Fake.mp4"),
-        os.path.join(parent_path, "Luma/Soldier_Fake.mp4"),
-        os.path.join(parent_path, "Luma/Car_Fake.mp4"),                 # miss
-        os.path.join(parent_path, "Luma/Ball_Fake.mp4"),                # miss
-        os.path.join(parent_path, "Real_ones/Cow_Real.mp4"),
+        # os.path.join(parent_path, "test_videos/Purse_Fake.mp4"),
+        # os.path.join(parent_path, "test_videos/Horse_Fake.mp4"),
+        # os.path.join(parent_path, "test_videos/Cow_Fake.mp4"),
+        # os.path.join(parent_path, "test_videos/Skier_Fake.mp4"),
+        # os.path.join(parent_path, "test_videos/TV_Fake.mp4"),
+        # os.path.join(parent_path, "test_videos/Sofa_Fake.mp4"),
+        # os.path.join(parent_path, "test_videos/Soldier_Fake.mp4"),
+        # os.path.join(parent_path, "test_videos/Car_Fake.mp4"),                 # miss
+        # os.path.join(parent_path, "test_videos/Ball_Fake.mp4"),                # miss
+        # os.path.join(parent_path, "test_videos/Cow_Real.mp4"),
         
         ## mancano questi due video
         
-        os.path.join(parent_path, "Real_ones/Skier_Real.mp4"),
-        os.path.join(parent_path, "Real_ones/Soldier_Real.mp4")
+        # os.path.join(parent_path, "test_videos/Skier_Real.mp4"),
+        os.path.join(parent_path, "test_videos/Soldier_Real.mp4")
     ]
     
     for video_path in video_paths_fake:
@@ -251,7 +249,6 @@ if __name__ == "__main__":
         print(f"Frames extracted and CSV generated: {csv_path}")
 
         table = running_tests(csv_path, weights_dir, models, device)
-        # if fusion is not None:
 
         table['fusion[max_logit]'] = apply_fusion(table[models].values, 'max_logit', axis=-1)
         table['fusion[mean_logit]'] = apply_fusion(table[models].values, 'mean_logit', axis=-1)

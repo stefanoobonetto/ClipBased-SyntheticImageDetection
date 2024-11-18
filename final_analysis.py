@@ -1,39 +1,50 @@
 import re
 import pandas as pd
 
-def parse_results(file_path):
-    with open(file_path, "r") as f:
-        content = f.read()
+models = [
+    "clipdet_latent10k", "clipdet_latent10k_plus", "Corvi2023",
+    "fusion\\[max_logit\\]", "fusion\\[mean_logit\\]", "fusion\\[median_logit\\]",
+    "fusion\\[lse_logit\\]", "fusion\\[mean_prob\\]", "fusion\\[soft_or_prob\\]"
+]
+
+with open('results.txt', 'r') as file:
+    content = file.read()
+
+sections = content.split("\n\n")
+
+results_data = []
+
+for section in sections:
+    filename_match = re.search(r'/([A-Za-z_]+)_(Real|Fake)\.mp4', section)
+    if not filename_match:
+        continue
+    filename = filename_match.group(0)
+    expected_label = "Synthetic" if filename_match.group(2) == "Fake" else "Real"
     
-    videos = re.split(r"/Users/[^\n]+\.mp4", content)
-    video_paths = re.findall(r"/Users/[^\n]+\.mp4", content)
+    predictions = {"Filename": filename}
     
-    results = []
-    fusion_methods = ["mean_logit", "max_logit", "median_logit", "lse_logit", "mean_prob", "soft_or_prob"]
-
-    for video, path in zip(videos[1:], video_paths):
-        video_name = path.split("/")[-1]
-        true_label = "Real" if "Real" in video_name else "Synthetic"
-        
-        for method in fusion_methods:
-            match = re.search(rf"fusion\[{method}\]\s+\|\s+(\w+)\s+\|\s+([\d.]+)", video)
-            if match:
-                predicted_label, confidence = match.groups()
-                results.append({
-                    "video": video_name,
-                    "true_label": true_label,
-                    "method": method,
-                    "predicted_label": predicted_label,
-                    "confidence": float(confidence),
-                    "correct": predicted_label == true_label
-                })
+    for model in models:
+        model_match = re.search(
+            rf"{model}.*?\|\s+(Real|Synthetic)\s+\|\s+([\d\.]+)", section
+        )
+        if model_match:
+            output = model_match.group(1)
+            confidence = float(model_match.group(2))
+            if output == expected_label:
+                predictions[model.replace("\\", "")] = confidence
+            else:
+                predictions[model.replace("\\", "")] = 1 - confidence
     
-    return pd.DataFrame(results)
+    results_data.append(predictions)
 
-file_path = "results.txt"  
-df_results = parse_results(file_path)
+df_results = pd.DataFrame(results_data)
 
-accuracy_per_method = df_results.groupby("method")["correct"].mean().sort_values(ascending=False)
+avg_row = df_results.drop(columns=["Filename"]).mean().to_dict()
+avg_row["Filename"] = "Average"
 
-print("Fusion Method Accuracies:")
-print(accuracy_per_method)
+df_results = pd.concat([df_results, pd.DataFrame([avg_row])], ignore_index=True)
+
+csv_file_path = 'final_results.csv'
+df_results.to_csv(csv_file_path, index=False)
+
+print(f"Results have been saved to {csv_file_path}")
