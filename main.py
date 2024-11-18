@@ -149,35 +149,58 @@ def running_tests(input_csv, weights_dir, models_list, device, batch_size=1):
         
     return table
 
-def analyze_video(csv_path, models, fusion_column='fusion', threshold=0):
+import pandas as pd
+
+def print_results(video_path, csv_path, models, fusion_methods, threshold=0):
     """
-    Analyze the output CSV to determine if a video is synthetic or not.
+    Analyze the output CSV to determine if a video is synthetic or not based on the majority of frames,
+    and save the results to a text file.
     
     Args:
+        video_path (str): Path to the video file.
         csv_path (str): Path to the output CSV file.
         models (list): List of model column names to evaluate (e.g., ['clipdet_latent10k_plus', 'Corvi2023']).
-        fusion_column (str): Column name for the fusion score.
+        fusion_methods (list): List of fusion methods to evaluate (e.g., ['max_logit', 'mean_logit']).
         threshold (float): Threshold above which a frame is classified as synthetic.
     
     Returns:
-        str: 'Synthetic' if the video is classified as synthetic, 'Real' otherwise.
+        None
     """
     try:
         data = pd.read_csv(csv_path)
 
-        required_columns = models + [fusion_column]
+        required_columns = models + [f'fusion[{method}]' for method in fusion_methods]
         missing_columns = [col for col in required_columns if col not in data.columns]
         if missing_columns:
             raise ValueError(f"Missing required columns in the CSV: {missing_columns}")
+        
+        results = []
+        
+        for model in models + [f'fusion[{method}]' for method in fusion_methods]:
+            synthetic_count = (data[model] > threshold).sum()
+            total_frames = len(data)
+            majority_synthetic = synthetic_count > (total_frames / 2)
+            
+            results.append({
+                'Model': model,
+                'Output': 'Synthetic' if majority_synthetic else 'Real',
+                'Confidence': synthetic_count / total_frames if majority_synthetic else 1 - (synthetic_count / total_frames)
+            })
+        
+        results_df = pd.DataFrame(results)
 
-        is_synthetic_by_models = any((data[model] > threshold).any() for model in models)
-
-        is_synthetic_by_fusion = (data[fusion_column] > threshold).any()
-
-        return "Synthetic" if is_synthetic_by_fusion or is_synthetic_by_models else "Real"
+        # Save results to a text file
+        with open('results.txt', 'a') as file:
+            file.write(video_path + "\n")
+            file.write(results_df.to_markdown(index=False) + "\n\n")
+        
+        # Print results to console
+        print(results_df.to_markdown(index=False))
     
     except Exception as e:
         raise RuntimeError(f"Error analyzing video: {e}")
+
+
 
 if __name__ == "__main__":
     parent_path = os.path.dirname(os.path.abspath(__file__))
@@ -196,46 +219,51 @@ if __name__ == "__main__":
         os.path.join(parent_path, "Luma/Skier_Fake.mp4"),
         os.path.join(parent_path, "Luma/TV_Fake.mp4"),
         os.path.join(parent_path, "Luma/Sofa_Fake.mp4"),
-        os.path.join(parent_path, "Luma/Soldier_Fake.mp4")
-    ]
-    video_paths_true = [
+        os.path.join(parent_path, "Luma/Soldier_Fake.mp4"),
+        os.path.join(parent_path, "Luma/Car_Fake.mp4"),                 # miss
+        os.path.join(parent_path, "Luma/Ball_Fake.mp4"),                # miss
         os.path.join(parent_path, "Real_ones/Cow_Real.mp4"),
+        
+        ## mancano questi due video
+        
         os.path.join(parent_path, "Real_ones/Skier_Real.mp4"),
         os.path.join(parent_path, "Real_ones/Soldier_Real.mp4")
     ]
     
-    video_path = video_paths_true[0]
+    for video_path in video_paths_fake:
     
-    print("\n\n\nRunning tests on video: ", video_path, "\n\n\n")
-    
-    weights_dir = os.path.join(parent_path, "weights")
-    temp_dir = os.path.join(parent_path, "temp_frames")
-    models = ['clipdet_latent10k_plus', 'Corvi2023']
-    fusion = 'soft_or_prob'
+        print("\n\n\nRunning tests on video: ", video_path, "\n\n\n")
+        
+        weights_dir = os.path.join(parent_path, "weights")
+        temp_dir = os.path.join(parent_path, "temp_frames")
+        models = ['clipdet_latent10k', 'clipdet_latent10k_plus', 'Corvi2023']
 
-    csv_path = os.path.join(temp_dir, "input_images.csv")
-    output_csv = os.path.join(parent_path, "results.csv")
-    
-    print("Extracting frames from video...")
-    frame_paths = extract_frames_from_video(video_path, temp_dir)
-    
-    generate_csv_from_frames(frame_paths, csv_path)
-    print(f"Frames extracted and CSV generated: {csv_path}")
+        fusion = 'soft_or_prob'
+        fusion_methods = ['mean_logit', 'max_logit', 'median_logit', 'lse_logit', 'mean_prob', 'soft_or_prob']
+        
+        csv_path = os.path.join(temp_dir, "input_images.csv")
+        output_csv = os.path.join(parent_path, "results.csv")
+        
+        print("Extracting frames from video...")
+        frame_paths = extract_frames_from_video(video_path, temp_dir)
+        
+        generate_csv_from_frames(frame_paths, csv_path)
+        print(f"Frames extracted and CSV generated: {csv_path}")
 
-    table = running_tests(csv_path, weights_dir, models, device)
-    if fusion is not None:
-        table['fusion'] = apply_fusion(table[models].values, fusion, axis=-1)
-    
-    os.makedirs(os.path.dirname(os.path.abspath(output_csv)), exist_ok=True)
-    table.to_csv(output_csv, index=False)
-    print(f"Results saved to {output_csv}")
+        table = running_tests(csv_path, weights_dir, models, device)
+        # if fusion is not None:
 
-    # all frames are processed, now we can classify the video based on the results
-    # question: how to classify the video? by the average of the frames? by the majority of the frames
-    # now we classify the video by the majority of the frames
-    
-    # logic: LLR > 0 --> synthetic
-    # consider the fusion score as well (?) --> if the fusion score is high, then the video is synthetic
-    
-    video_classification = analyze_video(output_csv, models)
-    print(f"The video is classified as: {video_classification}")
+        table['fusion[max_logit]'] = apply_fusion(table[models].values, 'max_logit', axis=-1)
+        table['fusion[mean_logit]'] = apply_fusion(table[models].values, 'mean_logit', axis=-1)
+        table['fusion[median_logit]'] = apply_fusion(table[models].values, 'median_logit', axis=-1)
+        table['fusion[lse_logit]'] = apply_fusion(table[models].values, 'lse_logit', axis=-1)
+        table['fusion[mean_prob]'] = apply_fusion(table[models].values, 'mean_prob', axis=-1)
+        table['fusion[soft_or_prob]'] = apply_fusion(table[models].values, 'soft_or_prob', axis=-1)
+
+        # filename,clipdet_latent10k,clipdet_latent10k_plus,Corvi2023,fusion[max_logit],fusion[mean_logit],fusion[median_logit],fusion[lse_logit],fusion[mean_prob],fusion[soft_or_prob]
+
+        os.makedirs(os.path.dirname(os.path.abspath(output_csv)), exist_ok=True)
+        table.to_csv(output_csv, index=False)
+        print(f"Results saved to {output_csv}")
+        
+        print_results(video_path, output_csv, models, fusion_methods)

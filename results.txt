@@ -1,0 +1,132 @@
+/Users/stefanobonetto/Documents/GitHub/ClipBased-SyntheticImageDetection/Luma/Purse_Fake.mp4
+
+| Model                  | Output    |   Confidence |
+|:-----------------------|:----------|-------------:|
+| clipdet_latent10k      | Synthetic |     1        |
+| clipdet_latent10k_plus | Synthetic |     1        |
+| Corvi2023              | Real      |     1        |
+| fusion[mean_logit]     | Synthetic |     0.719008 |
+| fusion[max_logit]      | Synthetic |     1        |
+| fusion[median_logit]   | Synthetic |     1        |
+| fusion[lse_logit]      | Synthetic |     1        |
+| fusion[mean_prob]      | Synthetic |     0.909091 |
+| fusion[soft_or_prob]   | Synthetic |     1        |
+
+/Users/stefanobonetto/Documents/GitHub/ClipBased-SyntheticImageDetection/Luma/Horse_Fake.mp4
+
+| Model                  | Output    |   Confidence |
+|:-----------------------|:----------|-------------:|
+| clipdet_latent10k      | Synthetic |     0.735537 |
+| clipdet_latent10k_plus | Synthetic |     1        |
+| Corvi2023              | Real      |     1        |
+| fusion[mean_logit]     | Real      |     0.859504 |
+| fusion[max_logit]      | Synthetic |     1        |
+| fusion[median_logit]   | Synthetic |     0.735537 |
+| fusion[lse_logit]      | Synthetic |     1        |
+| fusion[mean_prob]      | Real      |     0.595041 |
+| fusion[soft_or_prob]   | Synthetic |     1        |
+
+/Users/stefanobonetto/Documents/GitHub/ClipBased-SyntheticImageDetection/Luma/Cow_Fake.mp4
+| Model                  | Output    |   Confidence |
+|:-----------------------|:----------|-------------:|
+| clipdet_latent10k      | Real      |     0.842975 |
+| clipdet_latent10k_plus | Synthetic |     1        |
+| Corvi2023              | Real      |     1        |
+| fusion[mean_logit]     | Real      |     0.991736 |
+| fusion[max_logit]      | Synthetic |     1        |
+| fusion[median_logit]   | Real      |     0.842975 |
+| fusion[lse_logit]      | Synthetic |     1        |
+| fusion[mean_prob]      | Real      |     0.991736 |
+| fusion[soft_or_prob]   | Synthetic |     1        |
+
+/Users/stefanobonetto/Documents/GitHub/ClipBased-SyntheticImageDetection/Luma/Skier_Fake.mp4
+| Model                  | Output    |   Confidence |
+|:-----------------------|:----------|-------------:|
+| clipdet_latent10k      | Real      |     0.884298 |
+| clipdet_latent10k_plus | Synthetic |     1        |
+| Corvi2023              | Real      |     1        |
+| fusion[mean_logit]     | Real      |     1        |
+| fusion[max_logit]      | Synthetic |     1        |
+| fusion[median_logit]   | Real      |     0.884298 |
+| fusion[lse_logit]      | Synthetic |     1        |
+| fusion[mean_prob]      | Real      |     1        |
+| fusion[soft_or_prob]   | Synthetic |     1        |
+
+/Users/stefanobonetto/Documents/GitHub/ClipBased-SyntheticImageDetection/Luma/TV_Fake.mp4
+| Model                  | Output    |   Confidence |
+|:-----------------------|:----------|-------------:|
+| clipdet_latent10k      | Synthetic |     0.760331 |
+| clipdet_latent10k_plus | Synthetic |     1        |
+| Corvi2023              | Real      |     1        |
+| fusion[mean_logit]     | Real      |     0.900826 |
+| fusion[max_logit]      | Synthetic |     1        |
+| fusion[median_logit]   | Synthetic |     0.760331 |
+| fusion[lse_logit]      | Synthetic |     1        |
+| fusion[mean_prob]      | Real      |     0.785124 |
+| fusion[soft_or_prob]   | Synthetic |     1        |
+
+/Users/stefanobonetto/Documents/GitHub/ClipBased-SyntheticImageDetection/Luma/Sofa_Fake.mp4
+| Model                  | Output    |   Confidence |
+|:-----------------------|:----------|-------------:|
+| clipdet_latent10k      | Synthetic |     0.760331 |
+| clipdet_latent10k_plus | Synthetic |     1        |
+| Corvi2023              | Real      |     1        |
+| fusion[mean_logit]     | Real      |     0.578512 |
+| fusion[max_logit]      | Synthetic |     1        |
+| fusion[median_logit]   | Synthetic |     0.760331 |
+| fusion[lse_logit]      | Synthetic |     1        |
+| fusion[mean_prob]      | Synthetic |     0.586777 |
+| fusion[soft_or_prob]   | Synthetic |     1        |
+
+/Users/stefanobonetto/Documents/GitHub/ClipBased-SyntheticImageDetection/Luma/Soldier_Fake.mp4
+| Model                  | Output    |   Confidence |
+|:-----------------------|:----------|-------------:|
+| clipdet_latent10k      | Real      |     0.983471 |
+| clipdet_latent10k_plus | Synthetic |     0.942149 |
+| Corvi2023              | Real      |     1        |
+| fusion[mean_logit]     | Real      |     1        |
+| fusion[max_logit]      | Synthetic |     0.942149 |
+| fusion[median_logit]   | Real      |     0.983471 |
+| fusion[lse_logit]      | Synthetic |     1        |
+| fusion[mean_prob]      | Real      |     1        |
+| fusion[soft_or_prob]   | Synthetic |     1        |
+
+/Users/stefanobonetto/Documents/GitHub/ClipBased-SyntheticImageDetection/Luma/Car_Fake.mp4
+| Model                  | Output    |   Confidence |
+|:-----------------------|:----------|-------------:|
+| clipdet_latent10k      | Synthetic |     0.77686  |
+| clipdet_latent10k_plus | Synthetic |     0.958678 |
+| Corvi2023              | Real      |     1        |
+| fusion[mean_logit]     | Real      |     0.85124  |
+| fusion[max_logit]      | Synthetic |     0.983471 |
+| fusion[median_logit]   | Synthetic |     0.752066 |
+| fusion[lse_logit]      | Synthetic |     1        |
+| fusion[mean_prob]      | Real      |     0.719008 |
+| fusion[soft_or_prob]   | Synthetic |     1        |
+
+/Users/stefanobonetto/Documents/GitHub/ClipBased-SyntheticImageDetection/Luma/Ball_Fake.mp4
+| Model                  | Output    |   Confidence |
+|:-----------------------|:----------|-------------:|
+| clipdet_latent10k      | Real      |     0.793388 |
+| clipdet_latent10k_plus | Synthetic |     0.917355 |
+| Corvi2023              | Real      |     1        |
+| fusion[mean_logit]     | Real      |     0.991736 |
+| fusion[max_logit]      | Synthetic |     0.917355 |
+| fusion[median_logit]   | Real      |     0.793388 |
+| fusion[lse_logit]      | Synthetic |     1        |
+| fusion[mean_prob]      | Real      |     0.983471 |
+| fusion[soft_or_prob]   | Synthetic |     1        |
+
+/Users/stefanobonetto/Documents/GitHub/ClipBased-SyntheticImageDetection/Real_ones/Cow_Real.mp4
+| Model                  | Output    |   Confidence |
+|:-----------------------|:----------|-------------:|
+| clipdet_latent10k      | Real      |     1        |
+| clipdet_latent10k_plus | Real      |     0.97619  |
+| Corvi2023              | Real      |     1        |
+| fusion[mean_logit]     | Real      |     1        |
+| fusion[max_logit]      | Real      |     0.97619  |
+| fusion[median_logit]   | Real      |     1        |
+| fusion[lse_logit]      | Synthetic |     0.650794 |
+| fusion[mean_prob]      | Real      |     1        |
+| fusion[soft_or_prob]   | Synthetic |     0.960317 |
+
