@@ -151,7 +151,7 @@ def running_tests(input_csv, weights_dir, models_list, device, batch_size=1):
 
 import pandas as pd
 
-def print_results(video_path, csv_path, models, fusion_methods, threshold=0):
+def print_results(string_videos, video_path, csv_path, models, fusion_methods, threshold=0):
     """
     Analyze the output CSV to determine if a video is synthetic or not based on the majority of frames,
     and save the results to a text file.
@@ -189,12 +189,10 @@ def print_results(video_path, csv_path, models, fusion_methods, threshold=0):
         
         results_df = pd.DataFrame(results)
 
-        # Save results to a text file
-        with open('results.txt', 'a') as file:
+        with open(f'results_{string_videos}.txt', 'a') as file:
             file.write(video_path + "\n")
             file.write(results_df.to_markdown(index=False) + "\n\n")
         
-        # Print results to console
         print(results_df.to_markdown(index=False))
     
     except Exception as e:
@@ -202,7 +200,20 @@ def print_results(video_path, csv_path, models, fusion_methods, threshold=0):
 
 if __name__ == "__main__":
     parent_path = os.path.dirname(os.path.abspath(__file__))
-        
+
+    luma_files = [ "Purse_Fake.mp4", "Horse_Fake.mp4", "Cow_Fake.mp4", "Skier_Fake.mp4", "TV_Fake.mp4", "Sofa_Fake.mp4", "Soldier_Fake.mp4", "Car_Fake.mp4", "Ball_Fake.mp4", "Cow_Real.mp4", "Skier_Real.mp4", "Soldier_Real.mp4" ]
+    video_paths_luma = [ os.path.join(parent_path, f"test_videos_luma_plus_real/{name_file}") for name_file in luma_files ]
+
+    latte_files = [ "Ball_Fake.mp4", "Bike_Fake.mp4", "Car_Fake.mp4", "Cow_Fake.mp4", "Dancer_Fake.mp4", "Horse_Fake.mp4", "Panda_Fake.mp4", "Purse_Fake.mp4", "Skier_Fake.mp4", "Sofa_Fake.mp4", "Soldier1_Fake.mp4", "Soldier2_Fake.mp4", "Thunder_Fake.mp4", "TV_Fake.mp4" ]
+    video_paths_latte = [ os.path.join(parent_path, f"test_videos_latte/{name_file}") for name_file in latte_files ]
+    
+    cogvideo_files = [ "Panda_Fake.mp4", "Soldier_Fake.mp4"]
+    video_paths_cogvideo = [ os.path.join(parent_path, f"test_videos_CogVideoX-5B/{name_file}") for name_file in cogvideo_files ]
+    
+    video = input("Which video do you want to test? \n 1. Luma \n 2. Latte \n 3. CogVideoX-5B \n")
+    while video not in ['1', '2', '3']:
+        video = input("Invalid input. Please enter 1, 2, or 3: ")
+    
     if torch.cuda.is_available():
         device = 'cuda'
     elif torch.backends.mps.is_available():
@@ -210,25 +221,19 @@ if __name__ == "__main__":
     else:
         device = 'cpu'
 
-    video_paths_fake = [
-        # os.path.join(parent_path, "test_videos/Purse_Fake.mp4"),
-        # os.path.join(parent_path, "test_videos/Horse_Fake.mp4"),
-        # os.path.join(parent_path, "test_videos/Cow_Fake.mp4"),
-        # os.path.join(parent_path, "test_videos/Skier_Fake.mp4"),
-        # os.path.join(parent_path, "test_videos/TV_Fake.mp4"),
-        # os.path.join(parent_path, "test_videos/Sofa_Fake.mp4"),
-        # os.path.join(parent_path, "test_videos/Soldier_Fake.mp4"),
-        # os.path.join(parent_path, "test_videos/Car_Fake.mp4"),                 # miss
-        # os.path.join(parent_path, "test_videos/Ball_Fake.mp4"),                # miss
-        # os.path.join(parent_path, "test_videos/Cow_Real.mp4"),
-        
-        ## mancano questi due video
-        
-        # os.path.join(parent_path, "test_videos/Skier_Real.mp4"),
-        os.path.join(parent_path, "test_videos/Soldier_Real.mp4")
-    ]
+    print("\n\n\nRunning tests on device: ", device, "\n\n\n")
     
-    for video_path in video_paths_fake:
+    if video == '1':
+        video_paths = video_paths_luma
+        string_videos = "luma"
+    elif video == '2':
+        video_paths = video_paths_latte
+        string_videos = "latte"
+    else:
+        video_paths = video_paths_cogvideo
+        string_videos = "cogvideo"
+    
+    for video_path in video_paths:
     
         print("\n\n\nRunning tests on video: ", video_path, "\n\n\n")
         
@@ -240,7 +245,7 @@ if __name__ == "__main__":
         fusion_methods = ['mean_logit', 'max_logit', 'median_logit', 'lse_logit', 'mean_prob', 'soft_or_prob']
         
         csv_path = os.path.join(temp_dir, "input_images.csv")
-        output_csv = os.path.join(parent_path, "results.csv")
+        output_csv = os.path.join(parent_path, f"results_{string_videos}.csv")
         
         print("Extracting frames from video...")
         frame_paths = extract_frames_from_video(video_path, temp_dir)
@@ -263,4 +268,4 @@ if __name__ == "__main__":
         table.to_csv(output_csv, index=False)
         print(f"Results saved to {output_csv}")
         
-        print_results(video_path, output_csv, models, fusion_methods)
+        print_results(string_videos, video_path, output_csv, models, fusion_methods)

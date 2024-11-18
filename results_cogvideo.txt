@@ -1,0 +1,26 @@
+/Users/stefanobonetto/Documents/GitHub/ClipBased-SyntheticImageDetection/test_videos_CogVideoX-5B/Panda_Fake.mp4
+| Model                  | Output    |   Confidence |
+|:-----------------------|:----------|-------------:|
+| clipdet_latent10k      | Real      |     1        |
+| clipdet_latent10k_plus | Synthetic |     0.836735 |
+| Corvi2023              | Real      |     0.77551  |
+| fusion[mean_logit]     | Real      |     0.877551 |
+| fusion[max_logit]      | Synthetic |     0.897959 |
+| fusion[median_logit]   | Real      |     0.836735 |
+| fusion[lse_logit]      | Synthetic |     1        |
+| fusion[mean_prob]      | Real      |     0.877551 |
+| fusion[soft_or_prob]   | Synthetic |     1        |
+
+/Users/stefanobonetto/Documents/GitHub/ClipBased-SyntheticImageDetection/test_videos_CogVideoX-5B/Soldier_Fake.mp4
+| Model                  | Output    |   Confidence |
+|:-----------------------|:----------|-------------:|
+| clipdet_latent10k      | Real      |     1        |
+| clipdet_latent10k_plus | Synthetic |     1        |
+| Corvi2023              | Real      |     0.877551 |
+| fusion[mean_logit]     | Real      |     0.857143 |
+| fusion[max_logit]      | Synthetic |     1        |
+| fusion[median_logit]   | Real      |     0.877551 |
+| fusion[lse_logit]      | Synthetic |     1        |
+| fusion[mean_prob]      | Real      |     0.857143 |
+| fusion[soft_or_prob]   | Synthetic |     1        |
+
