@@ -2,6 +2,8 @@ tqdm
 scikit-learn
 pillow
 pyyaml
+tabulate
+matplotlib
 pandas
 opencv-python
 torchvision

@@ -203,15 +203,14 @@ def print_results(string_videos, video_path, csv_path, models, fusion_methods, t
 
 if __name__ == "__main__":
     parent_path = os.path.dirname(os.path.abspath(__file__))
-
-    luma_files = [ "Purse_Fake.mp4", "Horse_Fake.mp4", "Cow_Fake.mp4", "Skier_Fake.mp4", "TV_Fake.mp4", "Sofa_Fake.mp4", "Soldier_Fake.mp4", "Car_Fake.mp4", "Ball_Fake.mp4", "Cow_Real.mp4", "Skier_Real.mp4", "Soldier_Real.mp4" ]
-    video_paths_luma = [ os.path.join(parent_path, f"test_videos_luma_plus_real/{name_file}") for name_file in luma_files ]
-
-    latte_files = [ "Ball_Fake.mp4", "Bike_Fake.mp4", "Car_Fake.mp4", "Cow_Fake.mp4", "Dancer_Fake.mp4", "Horse_Fake.mp4", "Panda_Fake.mp4", "Purse_Fake.mp4", "Skier_Fake.mp4", "Sofa_Fake.mp4", "Soldier1_Fake.mp4", "Soldier2_Fake.mp4", "Thunder_Fake.mp4", "TV_Fake.mp4" ]
-    video_paths_latte = [ os.path.join(parent_path, f"test_videos_latte/{name_file}") for name_file in latte_files ]
     
-    cogvideo_files = [ "Panda_Fake.mp4", "Soldier_Fake.mp4"]
-    video_paths_cogvideo = [ os.path.join(parent_path, f"test_videos_CogVideoX-5B/{name_file}") for name_file in cogvideo_files ]
+    luma_folder = os.path.join(parent_path, f"test_videos_luma_plus_real")
+    latte_folder = os.path.join(parent_path, f"test_videos_latte")
+    cogvideo_folder = os.path.join(parent_path, f"test_videos_CogVideoX-5B")
+
+    video_paths_luma = [os.path.join(luma_folder, f) for f in os.listdir(luma_folder) if f.endswith('.mp4')]
+    video_paths_latte = [os.path.join(latte_folder, f) for f in os.listdir(latte_folder) if f.endswith('.mp4')]
+    video_paths_cogvideo = [os.path.join(cogvideo_folder, f) for f in os.listdir(cogvideo_folder) if f.endswith('.mp4')]
     
     video = input("Which video do you want to test? \n 1. Luma \n 2. Latte \n 3. CogVideoX-5B \n")
     while video not in ['1', '2', '3']:
