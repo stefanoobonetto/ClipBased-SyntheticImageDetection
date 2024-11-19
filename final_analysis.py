@@ -1,7 +1,7 @@
 import re
 import os
 import pandas as pd
-
+import matplotlib.pyplot as plt
 
 parent_path = os.path.dirname(os.path.abspath(__file__))
 RESULTS_PATH = os.path.join(parent_path, "results")
@@ -49,7 +49,6 @@ def further_analysis(file_path, string_videos):
     avg_row["Filename"] = "Average"
 
     df_results = pd.concat([df_results, pd.DataFrame([avg_row])], ignore_index=True)
-
     csv_file_path = os.path.join(RESULTS_PATH, f'final_results_{string_videos}.csv')
     df_results.to_csv(csv_file_path, index=False)
 
@@ -73,6 +72,52 @@ def main():
         string_videos = "cogvideo"
     
     further_analysis(path, string_videos)
+    csv_file_path = os.path.join(RESULTS_PATH, f'final_results_{string_videos}.csv')
+    
+    data = pd.read_csv(csv_file_path)
+
+    filenames = data['Filename']
+    models = data.columns[1:]  
+
+    short_filenames = filenames.str.replace(r"^.*[\\/]", "", regex=True)
+
+    # Remove the "Average" row from the data before plotting
+    data_without_avg = data[data['Filename'] != "Average"]
+
+    # Generate the plot
+    plt.figure(figsize=(14, 8))
+
+    # Assign colors to each model
+    colors = plt.cm.tab10.colors  # Use a colormap with distinct colors
+    color_map = {model: colors[i % len(colors)] for i, model in enumerate(models)}
+
+    # Plot each model's data with its corresponding color
+    for model in models:
+        if data[model].dtype == float or data[model].dtype == int:
+            plt.plot(data_without_avg['Filename'], data_without_avg[model], marker='o', label=model, color=color_map[model])
+
+    # Add average lines using the same colors
+    for model in models:
+        if data[model].dtype == float or data[model].dtype == int:
+            avg_value = data[model].mean()
+            plt.axhline(y=avg_value, linestyle='--', label=f"{model} (avg)", color=color_map[model])
+
+    # Customize the plot
+    plt.xticks(rotation=45, ha='right')
+    # plt.xlabel('Filename')
+    plt.ylabel('Confidence')
+    plt.title('Confidence Scores by Model')
+
+    # Position the legend below the plot
+    plt.legend(loc='upper center', bbox_to_anchor=(0.5, -0.25), ncol=2)
+    plt.tight_layout()
+
+    plot_file_path = os.path.join(RESULTS_PATH, f'confidence_comparison_plot_{string_videos}.png')
+    plt.savefig(plot_file_path)
+    print(f"Plot has been saved to {plot_file_path}")
+
+    plt.show()
+
     
 if __name__ == "__main__":
     main()
