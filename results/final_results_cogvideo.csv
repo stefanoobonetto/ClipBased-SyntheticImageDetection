@@ -1,0 +1,4 @@
+Filename,clipdet_latent10k,clipdet_latent10k_plus,Corvi2023,fusion[max_logit],fusion[mean_logit],fusion[median_logit],fusion[lse_logit],fusion[mean_prob],fusion[soft_or_prob]
+/Panda_Fake.mp4,0.0,1.0,0.12244900000000003,1.0,0.142857,0.12244900000000003,1.0,0.142857,1.0
+/Soldier_Fake.mp4,0.0,1.0,0.12244900000000003,1.0,0.142857,0.12244900000000003,1.0,0.142857,1.0
+Average,0.0,1.0,0.12244900000000003,1.0,0.142857,0.12244900000000003,1.0,0.142857,1.0

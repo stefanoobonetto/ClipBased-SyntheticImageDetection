@@ -2,6 +2,10 @@ import re
 import os
 import pandas as pd
 
+
+parent_path = os.path.dirname(os.path.abspath(__file__))
+RESULTS_PATH = os.path.join(parent_path, "results")
+
 models = [
     "clipdet_latent10k", "clipdet_latent10k_plus", "Corvi2023",
     "fusion\\[max_logit\\]", "fusion\\[mean_logit\\]", "fusion\\[median_logit\\]",
@@ -46,15 +50,12 @@ def further_analysis(file_path, string_videos):
 
     df_results = pd.concat([df_results, pd.DataFrame([avg_row])], ignore_index=True)
 
-    csv_file_path = f'final_results_{string_videos}.csv'
+    csv_file_path = os.path.join(RESULTS_PATH, f'final_results_{string_videos}.csv')
     df_results.to_csv(csv_file_path, index=False)
 
     print(f"Results have been saved to {csv_file_path}")
 
 def main():
-    
-    parent_path = os.path.dirname(os.path.abspath(__file__))
-
     
     path = input("For which file would you like to perform further analysis? \n 1. Luma \n 2. Latte \n 3. CogVideoX-5B \n")
 
@@ -62,13 +63,13 @@ def main():
         path = input("Invalid input. Please enter 1, 2, or 3: ")
     
     if path == '1':
-        path = os.path.join(parent_path, "results_luma.csv")
+        path = os.path.join(RESULTS_PATH, "results_luma.txt")
         string_videos = "luma"
     elif path == '2':
-        path = os.path.join(parent_path, "results_latte.csv")
+        path = os.path.join(RESULTS_PATH, "results_latte.txt")
         string_videos = "latte"
     else:
-        path = os.path.join(parent_path, "results_cogvideo.csv")
+        path = os.path.join(RESULTS_PATH, "results_cogvideo.txt")
         string_videos = "cogvideo"
     
     further_analysis(path, string_videos)

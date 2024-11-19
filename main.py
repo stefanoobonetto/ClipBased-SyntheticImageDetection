@@ -28,6 +28,9 @@ from utils.fusion import apply_fusion
 from networks import create_architecture, load_weights
 import cv2
 
+parent_path = os.path.dirname(os.path.abspath(__file__))
+RESULTS_PATH = os.path.join(parent_path, "results")
+
 def get_config(model_name, weights_dir='./weights'):
     with open(os.path.join(weights_dir, model_name, 'config.yaml')) as fid:
         data = yaml.load(fid, Loader=yaml.FullLoader)
@@ -189,7 +192,7 @@ def print_results(string_videos, video_path, csv_path, models, fusion_methods, t
         
         results_df = pd.DataFrame(results)
 
-        with open(f'results_{string_videos}.txt', 'a') as file:
+        with open(os.path.join(RESULTS_PATH, f'results_{string_videos}.txt'), 'a') as file:
             file.write(video_path + "\n")
             file.write(results_df.to_markdown(index=False) + "\n\n")
         
@@ -245,7 +248,7 @@ if __name__ == "__main__":
         fusion_methods = ['mean_logit', 'max_logit', 'median_logit', 'lse_logit', 'mean_prob', 'soft_or_prob']
         
         csv_path = os.path.join(temp_dir, "input_images.csv")
-        output_csv = os.path.join(parent_path, f"results_{string_videos}.csv")
+        output_csv = os.path.join(RESULTS_PATH, f"frames_results_{string_videos}.csv")
         
         print("Extracting frames from video...")
         frame_paths = extract_frames_from_video(video_path, temp_dir)
@@ -255,12 +258,8 @@ if __name__ == "__main__":
 
         table = running_tests(csv_path, weights_dir, models, device)
 
-        table['fusion[max_logit]'] = apply_fusion(table[models].values, 'max_logit', axis=-1)
-        table['fusion[mean_logit]'] = apply_fusion(table[models].values, 'mean_logit', axis=-1)
-        table['fusion[median_logit]'] = apply_fusion(table[models].values, 'median_logit', axis=-1)
-        table['fusion[lse_logit]'] = apply_fusion(table[models].values, 'lse_logit', axis=-1)
-        table['fusion[mean_prob]'] = apply_fusion(table[models].values, 'mean_prob', axis=-1)
-        table['fusion[soft_or_prob]'] = apply_fusion(table[models].values, 'soft_or_prob', axis=-1)
+        for fusion_method in fusion_methods:
+            table[f'fusion[{fusion_method}]'] = apply_fusion(table[models].values, fusion_method, axis=-1)
 
         # filename,clipdet_latent10k,clipdet_latent10k_plus,Corvi2023,fusion[max_logit],fusion[mean_logit],fusion[median_logit],fusion[lse_logit],fusion[mean_prob],fusion[soft_or_prob]
 
