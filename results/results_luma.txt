@@ -284,3 +284,94 @@
 | fusion[mean_prob]      | Real      |     0.702479 |
 | fusion[soft_or_prob]   | Synthetic |     1        |
 
+/home/stefano.bonetto/ClipBased-SyntheticImageDetection/test_videos_luma_plus_real/Tiger_Fake.mp4
+| Model                  | Output    |   Confidence |
+|:-----------------------|:----------|-------------:|
+| clipdet_latent10k      | Synthetic |     0.983471 |
+| clipdet_latent10k_plus | Synthetic |     1        |
+| Corvi2023              | Real      |     1        |
+| fusion[mean_logit]     | Synthetic |     0.801653 |
+| fusion[max_logit]      | Synthetic |     1        |
+| fusion[median_logit]   | Synthetic |     0.983471 |
+| fusion[lse_logit]      | Synthetic |     1        |
+| fusion[mean_prob]      | Synthetic |     0.909091 |
+| fusion[soft_or_prob]   | Synthetic |     1        |
+
+/home/stefano.bonetto/ClipBased-SyntheticImageDetection/test_videos_luma_plus_real/RoadFullOfCars_Fake .mp4
+| Model                  | Output    |   Confidence |
+|:-----------------------|:----------|-------------:|
+| clipdet_latent10k      | Real      |     0.677686 |
+| clipdet_latent10k_plus | Synthetic |     0.966942 |
+| Corvi2023              | Real      |     1        |
+| fusion[mean_logit]     | Real      |     1        |
+| fusion[max_logit]      | Synthetic |     0.966942 |
+| fusion[median_logit]   | Real      |     0.677686 |
+| fusion[lse_logit]      | Synthetic |     1        |
+| fusion[mean_prob]      | Real      |     0.917355 |
+| fusion[soft_or_prob]   | Synthetic |     1        |
+
+/home/stefano.bonetto/ClipBased-SyntheticImageDetection/test_videos_luma_plus_real/Pilot_Fake.mp4
+| Model                  | Output    |   Confidence |
+|:-----------------------|:----------|-------------:|
+| clipdet_latent10k      | Real      |     0.983471 |
+| clipdet_latent10k_plus | Real      |     0.578512 |
+| Corvi2023              | Real      |     1        |
+| fusion[mean_logit]     | Real      |     1        |
+| fusion[max_logit]      | Real      |     0.578512 |
+| fusion[median_logit]   | Real      |     0.983471 |
+| fusion[lse_logit]      | Synthetic |     0.942149 |
+| fusion[mean_prob]      | Real      |     1        |
+| fusion[soft_or_prob]   | Synthetic |     1        |
+
+/home/stefano.bonetto/ClipBased-SyntheticImageDetection/test_videos_luma_plus_real/Rocket_Fake.mp4
+| Model                  | Output    |   Confidence |
+|:-----------------------|:----------|-------------:|
+| clipdet_latent10k      | Real      |            1 |
+| clipdet_latent10k_plus | Synthetic |            1 |
+| Corvi2023              | Real      |            1 |
+| fusion[mean_logit]     | Real      |            1 |
+| fusion[max_logit]      | Synthetic |            1 |
+| fusion[median_logit]   | Real      |            1 |
+| fusion[lse_logit]      | Synthetic |            1 |
+| fusion[mean_prob]      | Real      |            1 |
+| fusion[soft_or_prob]   | Synthetic |            1 |
+
+/home/stefano.bonetto/ClipBased-SyntheticImageDetection/test_videos_luma_plus_real/TaxiDriver_Fake.mp4
+| Model                  | Output    |   Confidence |
+|:-----------------------|:----------|-------------:|
+| clipdet_latent10k      | Real      |     1        |
+| clipdet_latent10k_plus | Real      |     0.92562  |
+| Corvi2023              | Real      |     1        |
+| fusion[mean_logit]     | Real      |     1        |
+| fusion[max_logit]      | Real      |     0.92562  |
+| fusion[median_logit]   | Real      |     1        |
+| fusion[lse_logit]      | Synthetic |     0.661157 |
+| fusion[mean_prob]      | Real      |     1        |
+| fusion[soft_or_prob]   | Synthetic |     0.917355 |
+
+/home/stefano.bonetto/ClipBased-SyntheticImageDetection/test_videos_luma_plus_real/Doctor_Fake.mp4
+| Model                  | Output    |   Confidence |
+|:-----------------------|:----------|-------------:|
+| clipdet_latent10k      | Real      |     0.702479 |
+| clipdet_latent10k_plus | Synthetic |     1        |
+| Corvi2023              | Real      |     1        |
+| fusion[mean_logit]     | Real      |     1        |
+| fusion[max_logit]      | Synthetic |     1        |
+| fusion[median_logit]   | Real      |     0.702479 |
+| fusion[lse_logit]      | Synthetic |     1        |
+| fusion[mean_prob]      | Real      |     0.991736 |
+| fusion[soft_or_prob]   | Synthetic |     1        |
+
+/home/stefano.bonetto/ClipBased-SyntheticImageDetection/test_videos_luma_plus_real/Chef_Fake.mp4
+| Model                  | Output    |   Confidence |
+|:-----------------------|:----------|-------------:|
+| clipdet_latent10k      | Real      |     0.859504 |
+| clipdet_latent10k_plus | Synthetic |     0.991736 |
+| Corvi2023              | Real      |     1        |
+| fusion[mean_logit]     | Real      |     1        |
+| fusion[max_logit]      | Synthetic |     0.991736 |
+| fusion[median_logit]   | Real      |     0.859504 |
+| fusion[lse_logit]      | Synthetic |     1        |
+| fusion[mean_prob]      | Real      |     1        |
+| fusion[soft_or_prob]   | Synthetic |     1        |
+
