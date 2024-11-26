@@ -46,6 +46,10 @@ The `final_analysis.py` script takes as input the single table for each video an
 
 Finally also a plot is enerated based on those data and saved as `confidence_comparison_plot_<model>.png`
 
+### Script - `results/plot_histo.py`
+
+For a general overview.
+
 # Fusion Functions
 
 The `fusion_functions` dictionary defines several methods for combining logits or probabilities along a specified axis. Below is an explanation of each function:
