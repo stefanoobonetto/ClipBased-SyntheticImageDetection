@@ -21,11 +21,11 @@ def further_analysis(file_path, string_videos):
     results_data = []
 
     for section in sections:
-        filename_match = re.search(r'/([A-Za-z_]+)_(Real|Fake)\.mp4', section)
+        filename_match = re.search(r'/([A-Za-z_]+)_(Real|Luma|CogVideoX)\.mp4', section)
         if not filename_match:
             continue
         filename = filename_match.group(0)
-        expected_label = "Synthetic" if filename_match.group(2) == "Fake" else "Real"
+        expected_label = "Real" if filename_match.group(2) == "Real" else "Synthetic"
         
         predictions = {"Filename": filename}
         
