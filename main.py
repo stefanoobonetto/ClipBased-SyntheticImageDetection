@@ -1,20 +1,3 @@
-'''
-Copyright 2024 Image Processing Research Group of University Federico
-II of Naples ('GRIP-UNINA'). All rights reserved.
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-'''
-
 import torch
 import os
 import pandas as pd
@@ -246,8 +229,10 @@ if __name__ == "__main__":
         fusion = 'soft_or_prob'
         fusion_methods = ['mean_logit', 'max_logit', 'median_logit', 'lse_logit', 'mean_prob', 'soft_or_prob']
         
+        video_name = os.path.splitext(os.path.basename(video_path))[0]
+        
         csv_path = os.path.join(temp_dir, "input_images.csv")
-        output_csv = os.path.join(RESULTS_PATH, f"frames_results_{string_videos}.csv")
+        output_csv = os.path.join(RESULTS_PATH, f"frames_results_{string_videos}_{video_name}.csv")
         
         print("Extracting frames from video...")
         frame_paths = extract_frames_from_video(video_path, temp_dir)

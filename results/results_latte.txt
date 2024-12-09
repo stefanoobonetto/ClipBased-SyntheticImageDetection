@@ -180,3 +180,15 @@
 | fusion[mean_prob]      | Synthetic |            1 |
 | fusion[soft_or_prob]   | Synthetic |            1 |
 
+/Users/stefanobonetto/Documents/GitHub/ClipBased-SyntheticImageDetection/test_videos_latte/Ball_Fake.mp4
+| Model                  | Output    |   Confidence |
+|:-----------------------|:----------|-------------:|
+| clipdet_latent10k      | Real      |            1 |
+| clipdet_latent10k_plus | Synthetic |            1 |
+| Corvi2023              | Real      |            1 |
+| fusion[mean_logit]     | Real      |            1 |
+| fusion[max_logit]      | Synthetic |            1 |
+| fusion[median_logit]   | Real      |            1 |
+| fusion[lse_logit]      | Synthetic |            1 |
+| fusion[mean_prob]      | Real      |            1 |
+| fusion[soft_or_prob]   | Synthetic |            1 |

@@ -81,34 +81,26 @@ def main():
 
     short_filenames = filenames.str.replace(r"^.*[\\/]", "", regex=True)
 
-    # Remove the "Average" row from the data before plotting
     data_without_avg = data[data['Filename'] != "Average"]
 
-    # Generate the plot
     plt.figure(figsize=(14, 8))
 
-    # Assign colors to each model
-    colors = plt.cm.tab10.colors  # Use a colormap with distinct colors
+    colors = plt.cm.tab10.colors  
     color_map = {model: colors[i % len(colors)] for i, model in enumerate(models)}
 
-    # Plot each model's data with its corresponding color
     for model in models:
         if data[model].dtype == float or data[model].dtype == int:
             plt.plot(data_without_avg['Filename'], data_without_avg[model], marker='o', label=model, color=color_map[model])
 
-    # Add average lines using the same colors
     for model in models:
         if data[model].dtype == float or data[model].dtype == int:
             avg_value = data[model].mean()
             plt.axhline(y=avg_value, linestyle='--', label=f"{model} (avg)", color=color_map[model])
 
-    # Customize the plot
     plt.xticks(rotation=45, ha='right')
-    # plt.xlabel('Filename')
     plt.ylabel('Confidence')
     plt.title('Confidence Scores by Model')
 
-    # Position the legend below the plot
     plt.legend(loc='upper center', bbox_to_anchor=(0.5, -0.25), ncol=2)
     plt.tight_layout()
 

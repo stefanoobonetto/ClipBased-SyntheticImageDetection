@@ -1,0 +1,17 @@
+filename,clipdet_latent10k,clipdet_latent10k_plus,Corvi2023,fusion[mean_logit],fusion[max_logit],fusion[median_logit],fusion[lse_logit],fusion[mean_prob],fusion[soft_or_prob]
+/Users/stefanobonetto/Documents/GitHub/ClipBased-SyntheticImageDetection/temp_frames/frame_0000.jpg,-0.3088414,0.406579,-2.49842,-0.80022746,0.406579,-0.3088414,0.8407841,-0.5470692250504818,1.3070734
+/Users/stefanobonetto/Documents/GitHub/ClipBased-SyntheticImageDetection/temp_frames/frame_0001.jpg,-0.58454686,0.35451135,-2.848548,-1.0261945,0.35451135,-0.58454686,0.7133276,-0.6926152513513916,1.0973326
+/Users/stefanobonetto/Documents/GitHub/ClipBased-SyntheticImageDetection/temp_frames/frame_0002.jpg,-0.54027605,0.3351123,-2.9228766,-1.0426801,0.3351123,-0.54027605,0.7102322,-0.6899084524585823,1.0983788
+/Users/stefanobonetto/Documents/GitHub/ClipBased-SyntheticImageDetection/temp_frames/frame_0003.jpg,-0.5334223,0.33690545,-2.9796178,-1.0587115,0.33690545,-0.5334223,0.7119753,-0.6908787832383223,1.0993856
+/Users/stefanobonetto/Documents/GitHub/ClipBased-SyntheticImageDetection/temp_frames/frame_0004.jpg,-0.35233796,0.3249376,-3.1915,-1.0729667,0.3249376,-0.35233796,0.75522816,-0.6442940652770659,1.1715108
+/Users/stefanobonetto/Documents/GitHub/ClipBased-SyntheticImageDetection/temp_frames/frame_0005.jpg,-0.5794452,0.3106452,-3.1087372,-1.1258458,0.3106452,-0.5794452,0.6776129,-0.725041549705793,1.0485611
+/Users/stefanobonetto/Documents/GitHub/ClipBased-SyntheticImageDetection/temp_frames/frame_0006.jpg,-0.52042097,0.3535014,-2.8705842,-1.0125012,0.3535014,-0.52042097,0.72995204,-0.6724473597169625,1.1260889
+/Users/stefanobonetto/Documents/GitHub/ClipBased-SyntheticImageDetection/temp_frames/frame_0007.jpg,-0.29134822,0.55880237,-2.8454618,-0.8593359,0.55880237,-0.29134822,0.9376372,-0.5197021983655077,1.4064708
+/Users/stefanobonetto/Documents/GitHub/ClipBased-SyntheticImageDetection/temp_frames/frame_0008.jpg,-0.70691884,0.19482127,-2.695245,-1.0691142,0.19482127,-0.70691884,0.5742403,-0.7813509430197743,0.92854875
+/Users/stefanobonetto/Documents/GitHub/ClipBased-SyntheticImageDetection/temp_frames/frame_0009.jpg,-0.12210095,0.7811761,-2.656219,-0.6657146,0.7811761,-0.12210095,1.1440035,-0.37630808796435056,1.6907467
+/Users/stefanobonetto/Documents/GitHub/ClipBased-SyntheticImageDetection/temp_frames/frame_0010.jpg,-0.5369462,0.47768542,-2.9040344,-0.9877651,0.47768542,-0.5369462,0.81167233,-0.6365891878038685,1.2137762
+/Users/stefanobonetto/Documents/GitHub/ClipBased-SyntheticImageDetection/temp_frames/frame_0011.jpg,-0.08890134,0.77064276,-2.923321,-0.74719316,0.77064276,-0.08890134,1.1409838,-0.3881864556977219,1.6824669
+/Users/stefanobonetto/Documents/GitHub/ClipBased-SyntheticImageDetection/temp_frames/frame_0012.jpg,-0.39298975,0.6352656,-2.983216,-0.9136467,0.6352656,-0.39298975,0.9605713,-0.5395594591001972,1.4064856
+/Users/stefanobonetto/Documents/GitHub/ClipBased-SyntheticImageDetection/temp_frames/frame_0013.jpg,-0.5440062,0.47332224,-2.8148515,-0.96184516,0.47332224,-0.5440062,0.80899525,-0.633793220825386,1.2131863
+/Users/stefanobonetto/Documents/GitHub/ClipBased-SyntheticImageDetection/temp_frames/frame_0014.jpg,-0.15676713,0.93793046,-3.3565807,-0.8584725,0.93793046,-0.15676713,1.2367631,-0.3870954984585032,1.7618876
+/Users/stefanobonetto/Documents/GitHub/ClipBased-SyntheticImageDetection/temp_frames/frame_0015.jpg,-0.1298008,0.87703776,-2.8951356,-0.7159662,0.87703776,-0.1298008,1.2051713,-0.3692070702096305,1.7486236
