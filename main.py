@@ -187,15 +187,15 @@ def print_results(string_videos, video_path, csv_path, models, fusion_methods, t
 if __name__ == "__main__":
     parent_path = os.path.dirname(os.path.abspath(__file__))
     
-    luma_folder = os.path.join(parent_path, f"test_videos_luma_plus_real")
-    latte_folder = os.path.join(parent_path, f"test_videos_latte")
-    cogvideo_folder = os.path.join(parent_path, f"test_videos_CogVideoX-5B")
+    luma_folder = os.path.join(parent_path, f"tests/luma_dream_machine")
+    real_folder = os.path.join(parent_path, f"tests/real")
+    cogvideo_folder = os.path.join(parent_path, f"tests/CogVideoX-5b")
 
     video_paths_luma = [os.path.join(luma_folder, f) for f in os.listdir(luma_folder) if f.endswith('.mp4')]
-    video_paths_latte = [os.path.join(latte_folder, f) for f in os.listdir(latte_folder) if f.endswith('.mp4')]
+    video_paths_real = [os.path.join(real_folder, f) for f in os.listdir(real_folder) if f.endswith('.mp4')]
     video_paths_cogvideo = [os.path.join(cogvideo_folder, f) for f in os.listdir(cogvideo_folder) if f.endswith('.mp4')]
     
-    video = input("Which video do you want to test? \n 1. Luma \n 2. Latte \n 3. CogVideoX-5B \n")
+    video = input("Which video do you want to test? \n 1. Luma \n 2. Real \n 3. CogVideoX-5B \n")
     while video not in ['1', '2', '3']:
         video = input("Invalid input. Please enter 1, 2, or 3: ")
     
@@ -212,8 +212,8 @@ if __name__ == "__main__":
         video_paths = video_paths_luma
         string_videos = "luma"
     elif video == '2':
-        video_paths = video_paths_latte
-        string_videos = "latte"
+        video_paths = video_paths_real
+        string_videos = "real"
     else:
         video_paths = video_paths_cogvideo
         string_videos = "cogvideo"
