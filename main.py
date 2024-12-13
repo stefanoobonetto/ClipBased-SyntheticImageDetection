@@ -1,15 +1,17 @@
-import torch
 import os
-import pandas as pd
-import numpy as np
+import re
+import cv2
 import tqdm
 import yaml
+import torch
+import pandas as pd
+import numpy as np
 from PIL import Image
-from torchvision.transforms import CenterCrop, Resize, Compose, InterpolationMode
-from utils.processing import make_normalize
+import matplotlib.pyplot as plt
 from utils.fusion import apply_fusion
+from utils.processing import make_normalize
 from networks import create_architecture, load_weights
-import cv2
+from torchvision.transforms import CenterCrop, Resize, Compose, InterpolationMode
 
 parent_path = os.path.dirname(os.path.abspath(__file__))
 RESULTS_PATH = os.path.join(parent_path, "results")
@@ -137,50 +139,44 @@ def running_tests(input_csv, weights_dir, models_list, device, batch_size=1):
 
 import pandas as pd
 
-def print_results(string_videos, video_path, csv_path, models, fusion_methods, threshold=0):
-    """
-    Analyze the output CSV to determine if a video is synthetic or not based on the majority of frames,
-    and save the results to a text file.
-    
-    Args:
-        video_path (str): Path to the video file.
-        csv_path (str): Path to the output CSV file.
-        models (list): List of model column names to evaluate (e.g., ['clipdet_latent10k_plus', 'Corvi2023']).
-        fusion_methods (list): List of fusion methods to evaluate (e.g., ['max_logit', 'mean_logit']).
-        threshold (float): Threshold above which a frame is classified as synthetic.
-    
-    Returns:
-        None
-    """
+def save_results(string_videos, video_name, csv_path, models, fusion_methods, threshold=0, just_soft_or_prob=False):
     try:
         data = pd.read_csv(csv_path)
+        file_path = os.path.join(RESULTS_PATH, f'results_{string_videos}.csv')
 
+        if not os.path.exists(file_path) or os.path.getsize(file_path) == 0:
+            with open(file_path, 'w') as f:
+                if just_soft_or_prob:
+                    f.write("filename,prediction\n")
+                    
+                else:
+                    f.write("filename, prediction_clipdet_latent10k, prediction_clipdet_latent10k_plus, prediction_Corvi2023, prediction_fusion[mean_logit], prediction_fusion[max_logit], prediction_fusion[median_logit], prediction_fusion[lse_logit], prediction_fusion[mean_prob], prediction_fusion[soft_or_prob]\n")
+                    df = pd.DataFrame(columns=['filename', 'prediction_clipdet_latent10k', 'prediction_clipdet_latent10k_plus', 'prediction_Corvi2023', 'prediction_fusion[mean_logit]', 'prediction_fusion[max_logit]', 'prediction_fusion[median_logit]', 'prediction_fusion[lse_logit]', 'prediction_fusion[mean_prob]', 'prediction_fusion[soft_or_prob'])           # save the results in a csv file
+       
         required_columns = models + [f'fusion[{method}]' for method in fusion_methods]
         missing_columns = [col for col in required_columns if col not in data.columns]
+        
         if missing_columns:
             raise ValueError(f"Missing required columns in the CSV: {missing_columns}")
         
-        results = []
-        
-        for model in models + [f'fusion[{method}]' for method in fusion_methods]:
-            synthetic_count = (data[model] > threshold).sum()
+        # results = []
+        if just_soft_or_prob:
+            synthetic_count = (data['fusion[soft_or_prob]'] > threshold).sum()
             total_frames = len(data)
-            majority_synthetic = synthetic_count > (total_frames / 2)
             
-            results.append({
-                'Model': model,
-                'Output': 'Synthetic' if majority_synthetic else 'Real',
-                'Confidence': synthetic_count / total_frames if majority_synthetic else 1 - (synthetic_count / total_frames)
-            })
-        
-        results_df = pd.DataFrame(results)
+            with open(file_path, 'a') as f:
+                f.write(f"{video_name},{synthetic_count/total_frames}\n")
+        else:
+            for model in models + [f'fusion[{method}]' for method in fusion_methods]:
+                synthetic_count = (data[model] > threshold).sum()
+                total_frames = len(data)
+                # results.append((model, synthetic_count/total_frames))
+                df = df.append({'filename': video_name, f'prediction_{model}': synthetic_count/total_frames}, ignore_index=True)
 
-        with open(os.path.join(RESULTS_PATH, f'results_{string_videos}.txt'), 'a') as file:
-            file.write(video_path + "\n")
-            file.write(results_df.to_markdown(index=False) + "\n\n")
-        
-        print(results_df.to_markdown(index=False))
-    
+            with open(file_path, 'a') as f:
+                df.to_csv(f, header=False, index=False)
+                f.write("\n")
+            
     except Exception as e:
         raise RuntimeError(f"Error analyzing video: {e}")
 
@@ -251,4 +247,6 @@ if __name__ == "__main__":
         table.to_csv(output_csv, index=False)
         print(f"Results saved to {output_csv}")
         
-        print_results(string_videos, video_path, output_csv, models, fusion_methods)
+        save_results(string_videos, video_name, output_csv, models, fusion_methods, just_soft_or_prob=True)            
+        
+        

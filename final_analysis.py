@@ -45,10 +45,10 @@ def further_analysis(file_path, string_videos):
 
     df_results = pd.DataFrame(results_data)
 
-    avg_row = df_results.drop(columns=["Filename"]).mean().to_dict()
-    avg_row["Filename"] = "Average"
+    # avg_row = df_results.drop(columns=["Filename"]).mean().to_dict()
+    # avg_row["Filename"] = "Average"
 
-    df_results = pd.concat([df_results, pd.DataFrame([avg_row])], ignore_index=True)
+    # df_results = pd.concat([df_results, pd.DataFrame([avg_row])], ignore_index=True)
     csv_file_path = os.path.join(RESULTS_PATH, f'final_results_{string_videos}.csv')
     df_results.to_csv(csv_file_path, index=False)
 
