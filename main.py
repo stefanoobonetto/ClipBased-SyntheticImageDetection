@@ -235,7 +235,7 @@ if __name__ == "__main__":
         video_name = os.path.splitext(os.path.basename(video_path))[0]
         
         csv_path = os.path.join(temp_dir, "input_images.csv")
-        output_csv = os.path.join(RESULTS_PATH, f"frames_results_{string_videos}_{video_name}.csv")
+        output_csv = os.path.join(RESULTS_PATH, f"{string_videos}/frames_results_{string_videos}_{video_name}.csv")
         
         print("Extracting frames from video...")
         frame_paths = extract_frames_from_video(video_path, temp_dir)
