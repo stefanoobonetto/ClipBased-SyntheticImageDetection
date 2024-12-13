@@ -22,33 +22,9 @@ ALl results are storedd in the `results` folder.
 
 For each video in the folder, `main.py` outputed a file called `frames_results_<model>_<video_name>.csv`, where are stored LLR scores for each frame of the processed video, notice that if LLR > 0, the single frame is detected as synthetic.
 
-Then the results are resume in a table (`results_<model>.txt`) like the following, where for each feature dectetor method and for each fusion method is shown the output ad the confidence level:
+Then the results are resume in `results_<model>.csv`, where for each feature dectetor method and for each fusion method is shown the synthetic confidence degree (if > 0.5 video is detected as synthetic, otherwise as real). By setting `JUST_SOFT_OR_PROB` flag on true we can save results only with the best fusion method (`soft_or_prob`) 
 
-```text
-file_path
-| Model                  | Output         |   Confidence |
-|:-----------------------|:---------------|-------------:|
-| clipdet_latent10k      | Synthetic/Real |    [0, 1]    |
-| clipdet_latent10k_plus | Synthetic/Real |    [0, 1]    |
-| Corvi2023              | Synthetic/Real |    [0, 1]    |
-| fusion[mean_logit]     | Synthetic/Real |    [0, 1]    |
-| fusion[max_logit]      | Synthetic/Real |    [0, 1]    |
-| fusion[median_logit]   | Synthetic/Real |    [0, 1]    |
-| fusion[lse_logit]      | Synthetic/Real |    [0, 1]    |
-| fusion[mean_prob]      | Synthetic/Real |    [0, 1]    |
-| fusion[soft_or_prob]   | Synthetic/Real |    [0, 1]    |
-```
-We compute the `Output` value based on the majority of frames predictions. The `Confidence` is given by the percentage of frames voting the majority-class. 
-
-### Script - `final_analysis.py`
-
-The `final_analysis.py` script takes as input the single table for each video analyzed `results_<model>.txt` and convert them to a recap csv (`final_results_<model>.csv`) with the average for the given `model`.
-
-Finally also a plot is enerated based on those data and saved as `confidence_comparison_plot_<model>.png`
-
-### Script - `results/plot_histo.py`
-
-For a general overview.
+Every `prediction` is given by the percentage of frames voting the synthetic class. 
 
 # Fusion Functions
 
