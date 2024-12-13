@@ -1,0 +1,3 @@
+filename,prediction_clipdet_latent10k,prediction_clipdet_latent10k_plus,prediction_Corvi2023,prediction_fusion[mean_logit],prediction_fusion[max_logit],prediction_fusion[median_logit],prediction_fusion[lse_logit],prediction_fusion[mean_prob],prediction_fusion[soft_or_prob]
+Car_CogVideoX,0.40625,0.5,0.15625,0.34375,0.625,0.34375,0.96875,0.34375,1.0
+TV_CogVideoX,1.0,1.0,0.84375,1.0,1.0,1.0,1.0,1.0,1.0

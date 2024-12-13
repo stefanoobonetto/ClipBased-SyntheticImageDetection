@@ -143,40 +143,44 @@ def save_results(string_videos, video_name, csv_path, models, fusion_methods, th
     try:
         data = pd.read_csv(csv_path)
         file_path = os.path.join(RESULTS_PATH, f'results_{string_videos}.csv')
-
+        
+        # Controllo se il file esiste e inizializzazione DataFrame
         if not os.path.exists(file_path) or os.path.getsize(file_path) == 0:
-            with open(file_path, 'w') as f:
-                if just_soft_or_prob:
-                    f.write("filename,prediction\n")
-                    
-                else:
-                    f.write("filename, prediction_clipdet_latent10k, prediction_clipdet_latent10k_plus, prediction_Corvi2023, prediction_fusion[mean_logit], prediction_fusion[max_logit], prediction_fusion[median_logit], prediction_fusion[lse_logit], prediction_fusion[mean_prob], prediction_fusion[soft_or_prob]\n")
-                    df = pd.DataFrame(columns=['filename', 'prediction_clipdet_latent10k', 'prediction_clipdet_latent10k_plus', 'prediction_Corvi2023', 'prediction_fusion[mean_logit]', 'prediction_fusion[max_logit]', 'prediction_fusion[median_logit]', 'prediction_fusion[lse_logit]', 'prediction_fusion[mean_prob]', 'prediction_fusion[soft_or_prob'])           # save the results in a csv file
-       
-        required_columns = models + [f'fusion[{method}]' for method in fusion_methods]
+            columns = ['filename']
+            if just_soft_or_prob:
+                columns.append('prediction')
+            else:
+                columns += [f'prediction_{model}' for model in models] + \
+                           [f'prediction_fusion[{method}]' for method in fusion_methods]
+            
+            df = pd.DataFrame(columns=columns)
+            df.to_csv(file_path, index=False)
+        else:
+            df = pd.read_csv(file_path)
+
+        # Verifica colonne richieste
+        required_columns = [f'fusion[{method}]' for method in fusion_methods] + models
         missing_columns = [col for col in required_columns if col not in data.columns]
-        
         if missing_columns:
-            raise ValueError(f"Missing required columns in the CSV: {missing_columns}")
+            raise ValueError(f"Missing required columns in the input CSV: {missing_columns}")
         
-        # results = []
+        # Calcolo e salvataggio dei risultati
         if just_soft_or_prob:
             synthetic_count = (data['fusion[soft_or_prob]'] > threshold).sum()
             total_frames = len(data)
-            
-            with open(file_path, 'a') as f:
-                f.write(f"{video_name},{synthetic_count/total_frames}\n")
+            new_row = {'filename': video_name, 'prediction': synthetic_count / total_frames}
         else:
+            results = {'filename': video_name}
             for model in models + [f'fusion[{method}]' for method in fusion_methods]:
                 synthetic_count = (data[model] > threshold).sum()
                 total_frames = len(data)
-                # results.append((model, synthetic_count/total_frames))
-                df = df.append({'filename': video_name, f'prediction_{model}': synthetic_count/total_frames}, ignore_index=True)
-
-            with open(file_path, 'a') as f:
-                df.to_csv(f, header=False, index=False)
-                f.write("\n")
-            
+                results[f'prediction_{model}'] = synthetic_count / total_frames
+            new_row = results
+        
+        # Aggiungi nuova riga e salva
+        df = pd.concat([df, pd.DataFrame([new_row])], ignore_index=True)
+        df.to_csv(file_path, index=False)
+    
     except Exception as e:
         raise RuntimeError(f"Error analyzing video: {e}")
 
@@ -247,6 +251,6 @@ if __name__ == "__main__":
         table.to_csv(output_csv, index=False)
         print(f"Results saved to {output_csv}")
         
-        save_results(string_videos, video_name, output_csv, models, fusion_methods, just_soft_or_prob=True)            
+        save_results(string_videos, video_name, output_csv, models, fusion_methods, just_soft_or_prob=False)            
         
         
