@@ -15,6 +15,7 @@ from torchvision.transforms import CenterCrop, Resize, Compose, InterpolationMod
 
 parent_path = os.path.dirname(os.path.abspath(__file__))
 RESULTS_PATH = os.path.join(parent_path, "results")
+JUST_SOFT_OR_PROB = False                   # Set to True to save only the soft_or_prob fusion results
 
 def get_config(model_name, weights_dir='./weights'):
     with open(os.path.join(weights_dir, model_name, 'config.yaml')) as fid:
@@ -139,32 +140,28 @@ def running_tests(input_csv, weights_dir, models_list, device, batch_size=1):
 
 import pandas as pd
 
-def save_results(string_videos, video_name, csv_path, models, fusion_methods, threshold=0, just_soft_or_prob=False):
+def save_results(string_videos, video_name, input_csv, models, fusion_methods, threshold=0, just_soft_or_prob=False):
     try:
-        data = pd.read_csv(csv_path)
-        file_path = os.path.join(RESULTS_PATH, f'results_{string_videos}.csv')
+        data = pd.read_csv(input_csv)
+        output_csv = os.path.join(RESULTS_PATH, f'results_{string_videos}.csv')
         
-        # Controllo se il file esiste e inizializzazione DataFrame
-        if not os.path.exists(file_path) or os.path.getsize(file_path) == 0:
+        # Initialize DataFrame for results
+        if os.path.exists(output_csv) and os.path.getsize(output_csv) > 0:
+            df = pd.read_csv(output_csv)
+        else:
             columns = ['filename']
             if just_soft_or_prob:
                 columns.append('prediction')
             else:
                 columns += [f'prediction_{model}' for model in models] + \
                            [f'prediction_fusion[{method}]' for method in fusion_methods]
-            
             df = pd.DataFrame(columns=columns)
-            df.to_csv(file_path, index=False)
-        else:
-            df = pd.read_csv(file_path)
-
-        # Verifica colonne richieste
+        
         required_columns = [f'fusion[{method}]' for method in fusion_methods] + models
         missing_columns = [col for col in required_columns if col not in data.columns]
         if missing_columns:
             raise ValueError(f"Missing required columns in the input CSV: {missing_columns}")
         
-        # Calcolo e salvataggio dei risultati
         if just_soft_or_prob:
             synthetic_count = (data['fusion[soft_or_prob]'] > threshold).sum()
             total_frames = len(data)
@@ -177,9 +174,9 @@ def save_results(string_videos, video_name, csv_path, models, fusion_methods, th
                 results[f'prediction_{model}'] = synthetic_count / total_frames
             new_row = results
         
-        # Aggiungi nuova riga e salva
+        # Add new row to DataFrame
         df = pd.concat([df, pd.DataFrame([new_row])], ignore_index=True)
-        df.to_csv(file_path, index=False)
+        df.to_csv(output_csv, index=False)
     
     except Exception as e:
         raise RuntimeError(f"Error analyzing video: {e}")
@@ -187,17 +184,20 @@ def save_results(string_videos, video_name, csv_path, models, fusion_methods, th
 if __name__ == "__main__":
     parent_path = os.path.dirname(os.path.abspath(__file__))
     
-    luma_folder = os.path.join(parent_path, f"tests/luma_dream_machine")
-    real_folder = os.path.join(parent_path, f"tests/real")
+    luma_folder = os.path.join(parent_path, f"tests/Luma_dream_machine")
+    real_folder = os.path.join(parent_path, f"tests/Real")
     cogvideo_folder = os.path.join(parent_path, f"tests/CogVideoX-5b")
+    hunyuan_folder = os.path.join(parent_path, f"tests/Hunyuan")
+    
 
     video_paths_luma = [os.path.join(luma_folder, f) for f in os.listdir(luma_folder) if f.endswith('.mp4')]
     video_paths_real = [os.path.join(real_folder, f) for f in os.listdir(real_folder) if f.endswith('.mp4')]
     video_paths_cogvideo = [os.path.join(cogvideo_folder, f) for f in os.listdir(cogvideo_folder) if f.endswith('.mp4')]
+    video_paths_hunyuan = [os.path.join(hunyuan_folder, f) for f in os.listdir(hunyuan_folder) if f.endswith('.mp4')]
     
-    video = input("Which video do you want to test? \n 1. Luma \n 2. Real \n 3. CogVideoX-5B \n")
-    while video not in ['1', '2', '3']:
-        video = input("Invalid input. Please enter 1, 2, or 3: ")
+    video = input("Which video do you want to test? \n 1. Luma \n 2. Real \n 3. CogVideoX-5B \n 4. Hunyuan \n")
+    while video not in ['1', '2', '3', '4']:
+        video = input("Invalid input. Please enter 1, 2, 3 or 4: ")
     
     if torch.cuda.is_available():
         device = 'cuda'
@@ -214,9 +214,12 @@ if __name__ == "__main__":
     elif video == '2':
         video_paths = video_paths_real
         string_videos = "real"
-    else:
+    elif video == '3':
         video_paths = video_paths_cogvideo
         string_videos = "cogvideo"
+    else:
+        video_paths = video_paths_hunyuan
+        string_videos = "hunyuan"
     
     for video_path in video_paths:
     
@@ -251,6 +254,5 @@ if __name__ == "__main__":
         table.to_csv(output_csv, index=False)
         print(f"Results saved to {output_csv}")
         
-        save_results(string_videos, video_name, output_csv, models, fusion_methods, just_soft_or_prob=False)            
-        
+        save_results(string_videos, video_name, output_csv, models, fusion_methods, JUST_SOFT_OR_PROB)            
         
